@@ -1,0 +1,53 @@
+#!/bin/bash
+
+operation=${1}
+configuration=${2}
+
+if [ "x${operation}" = "x" ]; then
+   echo "Usage: $0 [-c|-r|-s|-v] <config-name>"
+   echo
+   echo "  Manages multiple Git configurations."
+   echo
+   echo "    -c    Creates a new configuration <config-name>, a copy of the current one"
+   echo "    -r    Remove an existing configuration <config-name>, if it exists"
+   echo "    -s    Switch to an existing configuration <config-name>"
+   echo "    -v    View all configurations"
+   echo
+   echo
+   exit 1
+fi
+
+
+configuration="${configuration}-gitconfig"
+pushd ${HOME} > /dev/null
+
+
+if [ ${operation} = "-c" ]; then
+   cp ~/.gitconfig ~/${configuration}
+   operation="-v"
+fi
+
+
+if [ ${operation} = "-r" ]; then
+   rm -f ~/${configuration}
+   operation="-v"
+fi
+
+
+if [ ${operation} = "-s" ]; then
+   rm -f ~/.gitconfig
+   ln -s ${configuration} .gitconfig
+   operation="-v"
+fi
+
+
+if [ ${operation} = "-v" ]; then
+   current=`ls -la .gitconfig | cut -d">" -f2 | cut -d"-" -f1 | cut -d" " -f2`
+   for x in `ls -1 *-gitconfig | cut -d"-" -f1`; do
+       if [ "$x" = "$current" ]; then
+          echo " * ${x}"
+       else
+          echo "   ${x}"
+       fi
+   done
+fi
