@@ -23,13 +23,14 @@ pushd ${HOME} > /dev/null
 
 
 if [ ${operation} = "-c" ]; then
-   cp ~/.gitconfig ~/${configuration}
+   cp .gitconfig ~/${configuration}
    operation="-v"
 fi
 
 
 if [ ${operation} = "-r" ]; then
-   rm -f ~/${configuration}
+   cp .gitconfig backup-gitconfig
+   rm -f ${configuration}
    operation="-v"
 fi
 
